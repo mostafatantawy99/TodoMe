@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/filters"
+        android:title="Filters"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_filter_list_white">
+
+        <menu>
+            <group android:checkableBehavior="all">
+                <item android:id="@+id/todo"
+                      android:title="@string/todo_label" />
+                <item android:id="@+id/inprogress"
+                      android:title="@string/in_progress_label" />
+                <item android:id="@+id/completed"
+                      android:title="@string/completed_label" />
+            </group>
+        </menu>
+    </item>
+</menu>
