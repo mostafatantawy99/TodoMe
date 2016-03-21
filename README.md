@@ -8,9 +8,9 @@ through states like Pending, In-Progress and Completed.
 
 * Supports filtering by statuses
 
-* Uses ![Realm](https://realm.io/) as Database Manager
+* Uses [Realm](https://realm.io/) as Database Manager
 
-* Uses ![MPAndroidChart Library](https://github.com/PhilJay/MPAndroidChart) for Graphs
+* Uses [MPAndroidChart Library](https://github.com/PhilJay/MPAndroidChart) for Graphs
 
 * Uses Material Design (FloatingActionButton, AppBarLayout, Toolbar, CoordinatorLayout, Styles, AppCompatActivity)
 
