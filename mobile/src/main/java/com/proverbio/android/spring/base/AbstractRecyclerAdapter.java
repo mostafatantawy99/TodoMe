@@ -59,7 +59,7 @@ public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject, VH exte
      */
     public void onCreatedView(RecyclerView recyclerView, RecyclerView.OnScrollListener scrollListener)
     {
-        if ( this.recyclerView != null )
+        if (this.recyclerView != null)
         {
             //This been already setup
             return;

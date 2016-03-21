@@ -2,7 +2,6 @@ package com.proverbio.android.spring;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
@@ -11,10 +10,27 @@ import android.view.View;
 import com.proverbio.android.spring.base.AbstractActivity;
 import com.proverbio.android.spring.util.StringConstants;
 
+/**
+ * @author Juan Pablo Proverbio
+ * @since 1.0
+ *
+ * This is the Todo MainActivity. You will be able to create, view, update and filter TODO items.
+ */
 public class MainActivity extends AbstractActivity implements View.OnClickListener
 {
+    /**
+     * A ViewPager where we place the adapter fragments and is connected to the TabLayout
+     */
     private ViewPager viewPager;
+
+    /**
+     * The FragmentPagerAdapter used to manage the available Fragments for this ViewPager
+     */
     private TodoViewPagerAdapter viewPagerAdapter;
+
+    /**
+     * The TabLayout used with TODAY | 7 DAYS | REPORTS
+     */
     private TabLayout tabLayout;
 
     @Override
@@ -26,7 +42,7 @@ public class MainActivity extends AbstractActivity implements View.OnClickListen
         // primary sections of the activity.
         viewPagerAdapter = new TodoViewPagerAdapter(this, getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the Todo App adapter.
         viewPager = (ViewPager) findViewById(R.id.container);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
@@ -37,6 +53,7 @@ public class MainActivity extends AbstractActivity implements View.OnClickListen
             @Override
             public void onPageSelected(int position)
             {
+                //Show and Hide Fab button as needed
                 switch (position)
                 {
                     case 0:
@@ -54,9 +71,11 @@ public class MainActivity extends AbstractActivity implements View.OnClickListen
             public void onPageScrollStateChanged(int state) {}
         });
 
+        //Get reference of TabLayout and setup with ViewPager
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        //Set the listener Fab button should use
         getFloatingActionButton().setOnClickListener(this);
     }
 
@@ -74,6 +93,7 @@ public class MainActivity extends AbstractActivity implements View.OnClickListen
             case R.id.fab:
                 switch (viewPager.getCurrentItem())
                 {
+                    //start TodoComposeActivity for composing a TODO item
                     case 0:
                     case 1:
                         Intent intent = new Intent(this, TodoComposeActivity.class);
@@ -82,7 +102,6 @@ public class MainActivity extends AbstractActivity implements View.OnClickListen
                         break;
 
                     default:
-                        //DO nothing - This should not happen unless a developer add another feature from the fab button
                         break;
                 }
                 break;
