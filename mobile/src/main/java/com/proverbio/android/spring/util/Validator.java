@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.proverbio.android.spring.R;
 
 /**
- * @author proverbio on 20/03/16.
+ * @author Juan Pablo Proverbio
  */
 public class Validator
 {
