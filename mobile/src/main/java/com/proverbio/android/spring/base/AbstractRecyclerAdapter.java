@@ -134,6 +134,8 @@ public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject, VH exte
         return new ItemDividerDecorator(getContext());
     }
 
+
+
     public Context getContext()
     {
         return context;
