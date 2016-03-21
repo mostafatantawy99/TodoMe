@@ -16,6 +16,6 @@ through states like Pending, In-Progress and Completed.
 
 * Implements RecyclerView with adapter, view holder, listeners in an abstract way for reusablity
 
-![Today](master/Today.png?raw=true "Today")
+![Today Tab](https://github.com/proverbface/TodoMe/blob/master/Today.png)
 
 Note: This is been the result of 8hs work from scratch.
