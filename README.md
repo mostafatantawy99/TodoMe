@@ -8,7 +8,7 @@ through states like Pending, In-Progress and Completed.
 
 * Supports filtering by statuses
 
-* Uses Realm to for Database Manager
+* Uses Realm as Database Manager
 
 * Uses a Graph Library for Graphs
 
