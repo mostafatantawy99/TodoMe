@@ -16,6 +16,6 @@ through states like Pending, In-Progress and Completed.
 
 * Implements RecyclerView with adapter, view holder, listeners in an abstract way for reusablity
 
-![Today](blob/master/Today.png?raw=true "Today")
+![Today](master/Today.png?raw=true "Today")
 
 Note: This is been the result of 8hs work from scratch.
