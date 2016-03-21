@@ -16,6 +16,6 @@ through states like Pending, In-Progress and Completed.
 
 * Implements RecyclerView with adapter, view holder, listeners in an abstract way for reusablity
 
-![Today Tab](https://github.com/proverbface/TodoMe/blob/master/Today.png)
+![REPORTS Tab](https://github.com/proverbface/TodoMe/blob/master/Reports.png)
 
 Note: This is been the result of 8hs work from scratch.
