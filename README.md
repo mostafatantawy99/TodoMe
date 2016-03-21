@@ -12,7 +12,7 @@ through states like Pending, In-Progress and Completed.
 
 * Uses [MPAndroidChart Library](https://github.com/PhilJay/MPAndroidChart) for Graphs
 
-* Uses Material Design (FloatingActionButton, AppBarLayout, Toolbar, CoordinatorLayout, Styles, AppCompatActivity)
+* Uses [Material Design](https://www.google.com/design/spec/material-design/introduction.html) (FloatingActionButton, AppBarLayout, Toolbar, CoordinatorLayout, Styles, AppCompatActivity)
 
 * Implements RecyclerView with adapter, view holder, listeners in an abstract way for reusablity
 
