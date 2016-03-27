@@ -3,6 +3,7 @@ package com.proverbio.android.spring;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,9 +11,10 @@ import android.view.ViewGroup;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.proverbio.android.spring.base.AbstractActivity;
-import com.proverbio.android.spring.context.GenericDao;
+import com.proverbio.android.spring.context.repository.TodoRepository;
 import com.proverbio.android.spring.util.StringConstants;
 import com.proverbio.android.spring.util.TimeManager;
 import com.proverbio.android.spring.util.Validator;
@@ -21,12 +23,18 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import io.realm.Realm;
+
 
 /**
  * @author Juan Pablo Proverbio
  */
 public class TodoComposeActivity extends AbstractActivity implements View.OnClickListener
 {
+    private static final String TAG = TodoComposeActivity.class.getSimpleName();
+
+    private TodoRepository todoRepository;
+
     private EditText summaryEditText;
     private TextView dueDateView;
     private ViewGroup statusLayout;
@@ -50,6 +58,8 @@ public class TodoComposeActivity extends AbstractActivity implements View.OnClic
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        this.todoRepository = new TodoRepository();
 
         //Show back arrow
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -136,33 +146,56 @@ public class TodoComposeActivity extends AbstractActivity implements View.OnClic
             case R.id.start:
                 todoModel.setStatus(TodoModel.Status.IN_PROGRESS.toString());
                 todoModel.setInProgressDate(new Date());
-                GenericDao.save(todoModel);
-                invalidateView();
+                save(false);
                 return true;
 
             case R.id.complete:
                 todoModel.setStatus(TodoModel.Status.COMPLETED.toString());
                 todoModel.setCompletedDate(new Date());
-                GenericDao.save(todoModel);
-                invalidateView();
+                save(false);
                 break;
 
             case R.id.send:
                 if (Validator.hasText(summaryEditText) & Validator.hasText(dueDateView))
                 {
-                    if (todoModel.getId() == -1l)
-                    {
-                        todoModel.setId(GenericDao.getNextId(TodoModel.class));
-                    }
                     todoModel.setSummary(summaryEditText.getText().toString());
                     todoModel.setDescription(detailsView.getText().toString());
-                    GenericDao.save(todoModel);
-                    finish();
+                    save(true);
                 }
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void save(final boolean finish)
+    {
+        todoRepository.saveAsync(todoModel, new Realm.Transaction.OnSuccess()
+        {
+            @Override
+            public void onSuccess()
+            {
+                if (finish)
+                {
+                    finish();
+                }
+                else
+                {
+                    invalidateView();
+                }
+            }
+        }, new Realm.Transaction.OnError()
+        {
+            @Override
+            public void onError(Throwable error)
+            {
+                Toast.makeText(TodoComposeActivity.this, TodoComposeActivity.this.getString(R.string.could_not_save_changes),
+                        Toast.LENGTH_SHORT).show();
+                Log.e(TAG, error.getMessage(), error);
+            }
+        });
+        invalidateView();
+
     }
 
     @Override

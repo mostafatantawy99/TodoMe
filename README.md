@@ -3,7 +3,7 @@
 
 This App is based on the beautiful Material Design.
 
-* It allows to create, view and update TODO items with a due date and manage them 
+* It allows to create, view and update TODO realmResultsList with a due date and manage them
 through states like Pending, In-Progress and Completed.
 
 * Supports filtering by statuses

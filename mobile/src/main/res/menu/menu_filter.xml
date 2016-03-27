@@ -9,7 +9,10 @@
         android:icon="@drawable/ic_filter_list_white">
 
         <menu>
-            <group android:checkableBehavior="all">
+            <group android:checkableBehavior="single">
+                <item android:id="@+id/by_default"
+                      android:title="@string/by_default"
+                      android:checked="true"/>
                 <item android:id="@+id/todo"
                       android:title="@string/todo_label" />
                 <item android:id="@+id/inprogress"

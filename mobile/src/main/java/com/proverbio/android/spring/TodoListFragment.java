@@ -2,6 +2,7 @@ package com.proverbio.android.spring;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,56 +11,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.proverbio.android.spring.base.AbstractRecyclerFragment;
-import com.proverbio.android.spring.context.GenericDao;
 import com.proverbio.android.spring.util.StringConstants;
 
 import java.util.Date;
-
-import io.realm.RealmResults;
 
 /**
  * @author Juan Pablo Proverbio
  */
 public class TodoListFragment extends AbstractRecyclerFragment<TodoModel, TodoViewHolder, TodoListAdapter>
 {
+    private static final String TAG = TodoListFragment.class.getSimpleName();
+
+    private Date fromDueDate;
+
+    private Date toDueDate;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
+        if (getArguments() != null)
+        {
+            fromDueDate = (Date)getArguments().getSerializable(StringConstants.FROM_DATE_KEY);
+            toDueDate = (Date)getArguments().getSerializable(StringConstants.TO_DATE_KEY);
+        }
+
+        super.onCreate( savedInstanceState );
     }
 
     @Override
     public TodoListAdapter onCreateAdapter()
     {
-        RealmResults<TodoModel> results = GenericDao.list(TodoModel.class);
-
-        //Dummy data -  in real life this code would only exist on test cases
-        if (results.isEmpty())
-        {
-            for (int i = 0; i < 50; i++)
-            {
-                TodoModel todoModel = new TodoModel();
-                todoModel.setId(i);
-                todoModel.setSummary("Get bathroom window replaced of room " + i);
-                todoModel.setDescription("A new model came up and it's in special. See www.trademe.co.nz");
-                todoModel.setDueDate(new Date());
-
-                if (i > 20 && i < 35)
-                {
-                    todoModel.setStatus(TodoModel.Status.IN_PROGRESS.toString());
-                }
-                else if (i >= 40)
-                {
-                    todoModel.setStatus(TodoModel.Status.COMPLETED.toString());
-                }
-
-                GenericDao.save(todoModel);
-            }
-
-            results = GenericDao.list(TodoModel.class);
-        }
-
-        return new TodoListAdapter(getContext(), this, results);
+        return new TodoListAdapter(getContext(), this, fromDueDate, toDueDate);
     }
 
     @Override
@@ -81,16 +63,21 @@ public class TodoListFragment extends AbstractRecyclerFragment<TodoModel, TodoVi
     {
         switch (item.getItemId())
         {
+            case R.id.by_default:
+                item.setChecked(!item.isChecked());
+                getRecyclerAdapter().filter(null);
+                return true;
+
             case R.id.todo:
                 if (item.isChecked())
                 {
                     item.setChecked(false);
-                    getRecyclerAdapter().filter(TodoModel.Status.PENDING, false);
+                    getRecyclerAdapter().filter(null);
                 }
                 else
                 {
                     item.setChecked(true);
-                    getRecyclerAdapter().filter(TodoModel.Status.PENDING, true);
+                    getRecyclerAdapter().filter(TodoModel.Status.PENDING);
                 }
                 return true;
 
@@ -98,12 +85,12 @@ public class TodoListFragment extends AbstractRecyclerFragment<TodoModel, TodoVi
                 if (item.isChecked())
                 {
                     item.setChecked(false);
-                    getRecyclerAdapter().filter(TodoModel.Status.IN_PROGRESS, false);
+                    getRecyclerAdapter().filter(null);
                 }
                 else
                 {
                     item.setChecked(true);
-                    getRecyclerAdapter().filter(TodoModel.Status.IN_PROGRESS, true);
+                    getRecyclerAdapter().filter(TodoModel.Status.IN_PROGRESS);
                 }
                 return true;
 
@@ -111,12 +98,12 @@ public class TodoListFragment extends AbstractRecyclerFragment<TodoModel, TodoVi
                 if (item.isChecked())
                 {
                     item.setChecked(false);
-                    getRecyclerAdapter().filter(TodoModel.Status.COMPLETED, false);
+                    getRecyclerAdapter().filter(null);
                 }
                 else
                 {
                     item.setChecked(true);
-                    getRecyclerAdapter().filter(TodoModel.Status.COMPLETED, true);
+                    getRecyclerAdapter().filter(TodoModel.Status.COMPLETED);
                 }
                 return true;
 
@@ -136,7 +123,15 @@ public class TodoListFragment extends AbstractRecyclerFragment<TodoModel, TodoVi
     @Override
     public void onRefresh()
     {
-        getRecyclerAdapter().setItems(GenericDao.list(TodoModel.class));
-        getSwipeRefreshLayout().setRefreshing(false);
+        //Mocks going to server and grabbing fresh data
+        //Only for demo purposes
+        new Handler().postDelayed(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                getSwipeRefreshLayout().setRefreshing(false);
+            }
+        }, 1000);
     }
 }

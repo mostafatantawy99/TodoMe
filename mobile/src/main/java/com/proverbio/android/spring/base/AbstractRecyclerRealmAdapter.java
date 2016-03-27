@@ -14,44 +14,39 @@ import io.realm.RealmResults;
  *
  * 
  */
-public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject,
+public abstract class AbstractRecyclerRealmAdapter<MODEL extends RealmObject,
         VH extends AbstractRecyclerViewHolder<MODEL>> extends RecyclerView.Adapter<VH>
         implements View.OnClickListener
 {
-    private static final String TAG = AbstractRecyclerAdapter.class.getSimpleName();
+    private static final String TAG = AbstractRecyclerRealmAdapter.class.getSimpleName();
 
     private final Context context;
+
+    private final Class<MODEL> modelType;
+
+    private RealmResults<MODEL> realmResultsList;
+
+    private final OnRecyclerViewItemClick<MODEL> itemClickListener;
 
     private RecyclerView recyclerView;
 
     private LinearLayoutManager layoutManager;
 
-    private RealmResults<MODEL> items;
-
-    private final OnRecyclerViewItemClick<MODEL> itemClickListener;
-
-    public AbstractRecyclerAdapter(Context context, OnRecyclerViewItemClick<MODEL> itemClickListener)
+    public AbstractRecyclerRealmAdapter(Context context,
+                                        Class<MODEL> modelType,
+                                        OnRecyclerViewItemClick<MODEL> itemClickListener)
     {
         this.context = context;
+        this.modelType = modelType;
         this.itemClickListener = itemClickListener;
-    }
+}
 
-    public AbstractRecyclerAdapter(Context context, OnRecyclerViewItemClick<MODEL> itemClickListener, RealmResults<MODEL> items)
+    public AbstractRecyclerRealmAdapter(Context context, Class<MODEL> modelType,
+                                        OnRecyclerViewItemClick<MODEL> itemClickListener,
+                                        RealmResults<MODEL> realmResultsList)
     {
-        this(context, itemClickListener);
-
-        if (items != null)
-        {
-            this.items = items;
-            this.items.addChangeListener(new RealmChangeListener()
-            {
-                @Override
-                public void onChange()
-                {
-                    notifyDataSetChanged();
-                }
-            });
-        }
+        this(context, modelType, itemClickListener);
+        setRealmResultsList(realmResultsList);
     }
 
     /**
@@ -95,13 +90,13 @@ public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject,
     @Override
     public void onBindViewHolder(VH holder, int position)
     {
-        holder.onBindViewHolder(items.get(position));
+        holder.onBindViewHolder(realmResultsList.get(position));
     }
 
     @Override
     public int getItemCount()
     {
-        return items.size();
+        return realmResultsList.size();
     }
 
     @Override
@@ -113,7 +108,7 @@ public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject,
         }
 
         int itemPosition = recyclerView.getChildAdapterPosition(view);
-        itemClickListener.onItemClick(itemPosition, items.get(itemPosition));
+        itemClickListener.onItemClick(itemPosition, realmResultsList.get(itemPosition));
     }
 
     /**
@@ -135,27 +130,33 @@ public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject,
         return new ItemDividerDecorator(getContext());
     }
 
-
-
     public Context getContext()
     {
         return context;
     }
 
-    public RealmResults<MODEL> getItems()
+    public RealmResults<MODEL> getRealmResultsList()
     {
-        return items;
+        return realmResultsList;
     }
 
-    public void setItems(RealmResults<MODEL> items)
+    public void setRealmResultsList(RealmResults<MODEL> realmResultsList)
     {
-        this.items = items;
+        this.realmResultsList = realmResultsList;
+
+        if (this.realmResultsList != null)
+        {
+            this.realmResultsList.addChangeListener(new RealmChangeListener()
+            {
+                @Override
+                public void onChange()
+                {
+                    notifyDataSetChanged();
+                }
+            });
+        }
+
         notifyDataSetChanged();
-    }
-
-    protected OnRecyclerViewItemClick<MODEL> getItemClickListener()
-    {
-        return itemClickListener;
     }
 
     /**
@@ -166,5 +167,4 @@ public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject,
     {
         void onItemClick(int position, MODEL model);
     }
-
 }

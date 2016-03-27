@@ -1,9 +1,16 @@
 package com.proverbio.android.spring;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Pair;
+
+import com.proverbio.android.spring.util.StringConstants;
+import com.proverbio.android.spring.util.TimeManager;
+
+import java.util.Date;
 
 
 /**
@@ -11,7 +18,15 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class TodoViewPagerAdapter extends FragmentPagerAdapter
 {
+    private static final String TAG = TodoViewPagerAdapter.class.getSimpleName();
+
     private final Context context;
+
+    private TodoListFragment todayTodoListFragment;
+
+    private TodoListFragment weeklyTodoListFragment;
+
+    private ReportsFragment todoReportsFragment;
 
     public TodoViewPagerAdapter(Context context, FragmentManager fragmentManager)
     {
@@ -27,15 +42,45 @@ public class TodoViewPagerAdapter extends FragmentPagerAdapter
         switch (position)
         {
             case 0:
-                TodoListFragment todoListFragment = new TodoListFragment();
-                return todoListFragment;
+                if (todayTodoListFragment == null)
+                {
+                    todayTodoListFragment = new TodoListFragment();
+
+                    Bundle params = new Bundle();
+                    Pair<Date, Date> today = TimeManager.getTodayDatePair();
+                    params.putSerializable(StringConstants.FROM_DATE_KEY, today.first);
+                    params.putSerializable(StringConstants.TO_DATE_KEY, today.second);
+
+                    todayTodoListFragment.setArguments(params);
+                }
+
+                return todayTodoListFragment;
 
             case 1:
-                todoListFragment = new TodoListFragment();
-                return todoListFragment;
+                if (weeklyTodoListFragment == null)
+                {
+                    weeklyTodoListFragment = new TodoListFragment();
+
+                    Bundle params = new Bundle();
+                    Pair<Date, Date> today = TimeManager.getTodayWeekPair();
+                    params.putSerializable(StringConstants.FROM_DATE_KEY, today.first);
+                    params.putSerializable(StringConstants.TO_DATE_KEY, today.second);
+
+                    weeklyTodoListFragment.setArguments(params);
+                }
+
+                return weeklyTodoListFragment;
+
+            case 2:
+                if ( todoReportsFragment == null)
+                {
+                    todoReportsFragment = new ReportsFragment();
+                }
+
+                return todoReportsFragment;
 
             default:
-                return new ReportFragment();
+                throw new UnsupportedOperationException("This case is not implemented. Add case for: " + position);
         }
     }
 

@@ -14,7 +14,7 @@ public class TodoApplication extends Application
     public void onCreate()
     {
         RealmConfiguration realmConfiguration = new RealmConfiguration.Builder(this)
-                .name("todo.realm")
+                .name("todome.realm")
                 .schemaVersion(1)
                 .build();
 

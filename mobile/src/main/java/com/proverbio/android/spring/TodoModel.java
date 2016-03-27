@@ -23,6 +23,7 @@ public class TodoModel extends RealmObject implements Parcelable
 
     private String status;
 
+    public static final String DUE_DATE_COLUMN_NAME = "dueDate";
     private Date dueDate;
 
     private Date inProgressDate;
@@ -34,14 +35,6 @@ public class TodoModel extends RealmObject implements Parcelable
         super();
         status = Status.PENDING.toString();
         id = -1l;
-    }
-
-    public TodoModel(String summary, String description, Status status, Date dueDate)
-    {
-        this.summary = summary;
-        this.description = description;
-        this.status = status == null ? Status.PENDING.toString() : status.toString();
-        this.dueDate = dueDate;
     }
 
     protected TodoModel(Parcel in)
@@ -155,7 +148,7 @@ public class TodoModel extends RealmObject implements Parcelable
         }
     };
 
-    public static enum Status
+    public enum Status
     {
         PENDING,
         IN_PROGRESS,

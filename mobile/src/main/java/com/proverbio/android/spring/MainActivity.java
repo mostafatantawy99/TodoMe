@@ -18,6 +18,8 @@ import com.proverbio.android.spring.util.StringConstants;
  */
 public class MainActivity extends AbstractActivity implements View.OnClickListener
 {
+    private static final String TAG = MainActivity.class.getSimpleName();
+
     /**
      * A ViewPager where we place the adapter fragments and is connected to the TabLayout
      */
@@ -56,11 +58,13 @@ public class MainActivity extends AbstractActivity implements View.OnClickListen
                 //Show and Hide Fab button as needed
                 switch (position)
                 {
+                    //If it's TODAY || GOWEEK then FloatingActionButton should be visible
                     case 0:
                     case 1:
                         getFloatingActionButton().setVisibility(View.VISIBLE);
                         break;
 
+                    //If it's REPORTS tnen FloationActionButton should not be visible
                     case 2:
                         getFloatingActionButton().setVisibility(View.GONE);
                         break;

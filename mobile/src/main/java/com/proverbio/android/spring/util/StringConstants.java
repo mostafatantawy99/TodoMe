@@ -11,7 +11,12 @@ public class StringConstants
     public static final String ITEMS_KEY = "items_key";
     public static final String ITEM_KEY = "item_key";
     public static final String IS_COMPOSE_KEY = "is_compose_key";
-    public static final String STATUS = "status";
+    public static final String BY_DATE_KEY = "by_date_key";
+    public static final String FROM_DATE_KEY = "from_date_key";
+    public static final String TO_DATE_KEY = "to_date_key";
+
+    public static final String STATUS_FIELD_NAME = "status";
+    public static final String ID_FIELD_NAME = "id";
 
     private StringConstants()
     {

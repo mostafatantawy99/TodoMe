@@ -19,9 +19,9 @@ import io.realm.RealmObject;
  *
  */
 public abstract class AbstractRecyclerFragment<MODEL extends RealmObject,
-        VH extends AbstractRecyclerViewHolder<MODEL>, ADAPTER extends AbstractRecyclerAdapter<MODEL, VH>>
+        VH extends AbstractRecyclerViewHolder<MODEL>, ADAPTER extends AbstractRecyclerRealmAdapter<MODEL, VH>>
         extends Fragment
-        implements AbstractRecyclerAdapter.OnRecyclerViewItemClick<MODEL>, SwipeRefreshLayout.OnRefreshListener
+        implements AbstractRecyclerRealmAdapter.OnRecyclerViewItemClick<MODEL>, SwipeRefreshLayout.OnRefreshListener
 {
     private ViewGroup fragmentLayout;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -31,8 +31,8 @@ public abstract class AbstractRecyclerFragment<MODEL extends RealmObject,
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        recyclerAdapter = onCreateAdapter();
         super.onCreate(savedInstanceState);
+        recyclerAdapter = onCreateAdapter();
     }
 
     @Override

@@ -3,37 +3,39 @@ package com.proverbio.android.spring;
 import android.content.Context;
 import android.view.ViewGroup;
 
-import com.proverbio.android.spring.base.AbstractRecyclerAdapter;
-import com.proverbio.android.spring.context.GenericDao;
-import com.proverbio.android.spring.util.StringConstants;
+import com.proverbio.android.spring.base.AbstractRecyclerRealmAdapter;
+import com.proverbio.android.spring.context.repository.TodoRepository;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.Date;
 
-import io.realm.Realm;
 import io.realm.RealmResults;
 
 /**
  * @author Juan Pablo Proverbio
  */
-public class TodoListAdapter extends AbstractRecyclerAdapter<TodoModel, TodoViewHolder>
+public class TodoListAdapter extends AbstractRecyclerRealmAdapter<TodoModel, TodoViewHolder>
 {
     /**
      * The TAG used for log messages from this class
      */
     public static final String TAG = TodoListAdapter.class.getSimpleName();
 
-    /**
-     * A set containing the statuses to filter items by
-     */
-    private Set<TodoModel.Status> filterStatuses;
+    private final TodoRepository todoRepository;
+
+    private final Date fromDueDate;
+
+    private final Date toDueDate;
 
     public TodoListAdapter(Context context,
                            OnRecyclerViewItemClick<TodoModel> itemClickListener,
-                           RealmResults<TodoModel> items)
+                           Date fromDueDate,
+                           Date toDueDate)
     {
-        super(context, itemClickListener, items);
-
+        super(context, TodoModel.class, itemClickListener);
+        this.fromDueDate = fromDueDate;
+        this.toDueDate = toDueDate;
+        this.todoRepository = new TodoRepository();
+        setRealmResultsList(todoRepository.listOnlyTodo(fromDueDate, toDueDate));
     }
 
     @Override
@@ -42,101 +44,30 @@ public class TodoListAdapter extends AbstractRecyclerAdapter<TodoModel, TodoView
         return new TodoViewHolder(getContext(), this);
     }
 
+
     /**
-     * Adds or removes a status from the filterStatuses array and then executes the filtering by status
+     * Executes an async filtering by status
      *
-     * @param status - a status to be added or removed from filterStatuses array
-     * @param isAdd - a flag to decide to add or remove status from filterStatuses array
+     * @param status - the status to filter items by
      *
      * This method should be use the Filter class as soon as Realm adds support for it.
      *
      * The filtering by status can be enhanced if Realm supports a equalTo or contains method that supports an array of strings.
      *
-     * Real life app this would also be async
      */
-    public void filter(TodoModel.Status status, boolean isAdd)
+    public void filter(TodoModel.Status status)
     {
-        if (isAdd)
+        RealmResults<TodoModel> realmResults;
+
+        if (status == null)
         {
-            getFilterStatuses().add(status);
+            realmResults = todoRepository.listOnlyTodo(fromDueDate, toDueDate);
         }
         else
         {
-            getFilterStatuses().remove(status);
+            realmResults = todoRepository.list(status, fromDueDate, toDueDate);
         }
 
-        if (getFilterStatuses().isEmpty() || getFilterStatuses().size() == 3)
-        {
-            RealmResults<TodoModel> results = GenericDao.list(TodoModel.class);
-            setItems(results);
-        }
-        else
-        {
-            RealmResults<TodoModel> results;
-
-            if (getFilterStatuses().contains(TodoModel.Status.PENDING) &&
-                    getFilterStatuses().contains(TodoModel.Status.IN_PROGRESS) &&
-                    !getFilterStatuses().contains(TodoModel.Status.COMPLETED))
-
-            {
-                results = Realm.getDefaultInstance().where(TodoModel.class)
-                        .equalTo(StringConstants.STATUS, TodoModel.Status.PENDING.toString())
-                        .or()
-                        .equalTo(StringConstants.STATUS, TodoModel.Status.IN_PROGRESS.toString())
-                        .findAll();
-            }
-            else if (getFilterStatuses().contains(TodoModel.Status.PENDING) &&
-                    !getFilterStatuses().contains(TodoModel.Status.IN_PROGRESS) &&
-                    getFilterStatuses().contains(TodoModel.Status.COMPLETED))
-
-            {
-                results = Realm.getDefaultInstance().where(TodoModel.class)
-                        .equalTo(StringConstants.STATUS, TodoModel.Status.PENDING.toString())
-                        .or()
-                        .equalTo(StringConstants.STATUS, TodoModel.Status.COMPLETED.toString())
-                        .findAll();
-            }
-            else if (!getFilterStatuses().contains(TodoModel.Status.PENDING) &&
-                    getFilterStatuses().contains(TodoModel.Status.IN_PROGRESS) &&
-                    getFilterStatuses().contains(TodoModel.Status.COMPLETED))
-
-            {
-                results = Realm.getDefaultInstance().where(TodoModel.class)
-                        .equalTo(StringConstants.STATUS, TodoModel.Status.IN_PROGRESS.toString())
-                        .or()
-                        .equalTo(StringConstants.STATUS, TodoModel.Status.COMPLETED.toString())
-                        .findAll();
-            }
-            else if (getFilterStatuses().contains(TodoModel.Status.PENDING))
-
-            {
-                results = GenericDao.listByStatus(TodoModel.class, TodoModel.Status.PENDING.toString());
-            }
-            else if (getFilterStatuses().contains(TodoModel.Status.IN_PROGRESS))
-            {
-                results = GenericDao.listByStatus(TodoModel.class, TodoModel.Status.IN_PROGRESS.toString());
-            }
-            else
-
-            {
-                results = GenericDao.listByStatus(TodoModel.class, TodoModel.Status.COMPLETED.toString());
-            }
-
-            setItems(results);
-        }
+        setRealmResultsList(realmResults);
     }
-
-    /**
-     * @return - Returns the FilterStatuses array - This would be used latter on to filter by statuses
-     */
-    private Set<TodoModel.Status> getFilterStatuses()
-    {
-        if (filterStatuses == null)
-        {
-            filterStatuses = new LinkedHashSet<>();
-        }
-
-        return filterStatuses;
-    }
-
 }
