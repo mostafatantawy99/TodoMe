@@ -14,7 +14,8 @@ import io.realm.RealmResults;
  *
  * 
  */
-public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject, VH extends AbstractRecyclerViewHolder<MODEL>> extends RecyclerView.Adapter<VH>
+public abstract class AbstractRecyclerAdapter<MODEL extends RealmObject,
+        VH extends AbstractRecyclerViewHolder<MODEL>> extends RecyclerView.Adapter<VH>
         implements View.OnClickListener
 {
     private static final String TAG = AbstractRecyclerAdapter.class.getSimpleName();
