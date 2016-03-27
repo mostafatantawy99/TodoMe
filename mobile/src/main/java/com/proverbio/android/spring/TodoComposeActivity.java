@@ -111,6 +111,10 @@ public class TodoComposeActivity extends AbstractActivity implements View.OnClic
         {
             TodoViewHolder.invalidateStatusView(this, todoModel, statusView);
         }
+
+        setTitle(!isCompose ? getString(R.string.view_todo_label) :
+                todoModel.getId() == -1 ? getString(R.string.new_todo_label) :
+                        getString(R.string.edit_todo_label));
     }
 
     @Override
@@ -170,12 +174,16 @@ public class TodoComposeActivity extends AbstractActivity implements View.OnClic
 
     private void save(final boolean finish)
     {
-        todoRepository.saveAsync(todoModel, new Realm.Transaction.OnSuccess() {
+        todoRepository.saveAsync(todoModel, new Realm.Transaction.OnSuccess()
+        {
             @Override
-            public void onSuccess() {
-                if (finish) {
+            public void onSuccess()
+            {
+                if (finish)
+                {
                     finish();
-                } else {
+                } else
+                {
                     invalidateView();
                 }
             }

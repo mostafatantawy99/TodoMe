@@ -20,6 +20,9 @@
     <string name="complete_label">Complete</string>
     <string name="items_label">&#160; items</string>
     <string name="no_items_message">There are no TODO items</string>
+    <string name="new_todo_label">New TODO</string>
+    <string name="edit_todo_label">Edit TODO</string>
+    <string name="view_todo_label">View TODO</string>
 
     <string name="required_label">Required</string>
 
