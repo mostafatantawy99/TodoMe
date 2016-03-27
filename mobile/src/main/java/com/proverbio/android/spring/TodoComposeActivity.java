@@ -170,32 +170,23 @@ public class TodoComposeActivity extends AbstractActivity implements View.OnClic
 
     private void save(final boolean finish)
     {
-        todoRepository.saveAsync(todoModel, new Realm.Transaction.OnSuccess()
-        {
+        todoRepository.saveAsync(todoModel, new Realm.Transaction.OnSuccess() {
             @Override
-            public void onSuccess()
-            {
-                if (finish)
-                {
+            public void onSuccess() {
+                if (finish) {
                     finish();
-                }
-                else
-                {
+                } else {
                     invalidateView();
                 }
             }
-        }, new Realm.Transaction.OnError()
-        {
+        }, new Realm.Transaction.OnError() {
             @Override
-            public void onError(Throwable error)
-            {
+            public void onError(Throwable error) {
                 Toast.makeText(TodoComposeActivity.this, TodoComposeActivity.this.getString(R.string.could_not_save_changes),
                         Toast.LENGTH_SHORT).show();
                 Log.e(TAG, error.getMessage(), error);
             }
         });
-        invalidateView();
-
     }
 
     @Override
@@ -251,9 +242,12 @@ public class TodoComposeActivity extends AbstractActivity implements View.OnClic
                 }
                 else
                 {
+                    GregorianCalendar calendar = new GregorianCalendar();
+                    calendar.setTimeInMillis(new Date().getTime());
+
                     datePickerDialog = new DatePickerDialog(this,
-                            onDateSetListener, Calendar.getInstance().get(Calendar.YEAR),
-                            Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+                            onDateSetListener, calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
                 }
 
                 datePickerDialog.setTitle(getString(R.string.due_label));

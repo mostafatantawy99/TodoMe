@@ -19,6 +19,7 @@
     <string name="in_progress_action_label">Start Progress</string>
     <string name="complete_label">Complete</string>
     <string name="items_label">&#160; items</string>
+    <string name="no_items_message">There are no TODO items</string>
 
     <string name="required_label">Required</string>
 

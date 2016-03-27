@@ -18,7 +18,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.proverbio.android.spring.context.repository.TodoRepository;
 import com.proverbio.android.spring.util.TimeManager;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,6 +67,7 @@ public class ReportsFragment extends Fragment
             pieTodayChart.setRotationEnabled(false);
             pieTodayChart.setSelected(false);
             pieTodayChart.getLegend().setEnabled(false);
+            pieTodayChart.setNoDataTextDescription(getContext().getString(R.string.no_items_message));
             pendingTodayView = (TextView)fragmentLayout.findViewById(R.id.pending);
             inProgressTodayView = (TextView)fragmentLayout.findViewById(R.id.inprogress);
             completedTodayView = (TextView)fragmentLayout.findViewById(R.id.completed);
@@ -79,6 +80,7 @@ public class ReportsFragment extends Fragment
             pieWeekChart.setRotationEnabled(false);
             pieWeekChart.setSelected(false);
             pieWeekChart.getLegend().setEnabled(false);
+            pieWeekChart.setNoDataTextDescription(getContext().getString(R.string.no_items_message));
             pendingWeekView = (TextView)fragmentLayout.findViewById(R.id.pendingWeek);
             inProgressWeekView = (TextView)fragmentLayout.findViewById(R.id.inprogressWeek);
             completedWeekView = (TextView)fragmentLayout.findViewById(R.id.completedWeek);
@@ -94,22 +96,43 @@ public class ReportsFragment extends Fragment
      */
     private void invalidateView()
     {
-        List<String> labels = Arrays.asList(getContext().getString(R.string.todo_label),
-                getContext().getString(R.string.in_progress_label),
-                getContext().getString(R.string.completed_label));
-
-        List<Integer> colors = Arrays.asList(ContextCompat.getColor(getContext(), R.color.colorAccent),
-                ContextCompat.getColor(getContext(), R.color.lightblue),
-                ContextCompat.getColor(getContext(), R.color.colorPrimary));
-
         //Today graph stuff
         Pair<Date, Date> today = TimeManager.getTodayDatePair();
         int pendingCount = todoRepository.list(TodoModel.Status.PENDING, today.first, today.second).size();
         int inProgressCount = todoRepository.list(TodoModel.Status.IN_PROGRESS, today.first, today.second).size();
         int completedCount = todoRepository.list(TodoModel.Status.COMPLETED, today.first, today.second).size();
 
-        List<Entry> values = Arrays.asList(new Entry(pendingCount, 0), new Entry(inProgressCount, 1),
-                new Entry(completedCount, 2));
+        List<String> labels = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
+        List<Entry> values = new ArrayList<>();
+
+        if (pendingCount > 0)
+        {
+            labels.add(getContext().getString(R.string.todo_label));
+            colors.add(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            values.add(new Entry(pendingCount, values.size()));
+        }
+
+        if (inProgressCount > 0)
+        {
+            labels.add(getContext().getString(R.string.in_progress_label));
+            colors.add(ContextCompat.getColor(getContext(), R.color.lightblue));
+            values.add(new Entry(inProgressCount, values.size()));
+        }
+
+        if (completedCount > 0)
+        {
+            labels.add(getContext().getString(R.string.completed_label));
+            colors.add(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            values.add(new Entry(completedCount, values.size()));
+        }
+
+        if (labels.isEmpty())
+        {
+            labels.add(getContext().getString(R.string.no_items_message));
+            colors.add(ContextCompat.getColor(getContext(), R.color.gray));
+            values.add(new Entry(100, 0));
+        }
 
         PieDataSet pieDataSet = new PieDataSet(values, "");
         pieDataSet.setColors(colors);
@@ -131,8 +154,37 @@ public class ReportsFragment extends Fragment
         inProgressCount = todoRepository.list(TodoModel.Status.IN_PROGRESS, week.first, week.second).size();
         completedCount = todoRepository.list(TodoModel.Status.COMPLETED, week.first, week.second).size();
 
-        values = Arrays.asList(new Entry(pendingCount, 0), new Entry(inProgressCount, 1),
-                new Entry(completedCount, 2));
+        labels = new ArrayList<>();
+        colors = new ArrayList<>();
+        values = new ArrayList<>();
+
+        if (pendingCount > 0)
+        {
+            labels.add(getContext().getString(R.string.todo_label));
+            colors.add(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            values.add(new Entry(pendingCount, values.size()));
+        }
+
+        if (inProgressCount > 0)
+        {
+            labels.add(getContext().getString(R.string.in_progress_label));
+            colors.add(ContextCompat.getColor(getContext(), R.color.lightblue));
+            values.add(new Entry(inProgressCount, values.size()));
+        }
+
+        if (completedCount > 0)
+        {
+            labels.add(getContext().getString(R.string.completed_label));
+            colors.add(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            values.add(new Entry(completedCount, values.size()));
+        }
+
+        if (labels.isEmpty())
+        {
+            labels.add(getContext().getString(R.string.no_items_message));
+            colors.add(ContextCompat.getColor(getContext(), R.color.gray));
+            values.add(new Entry(100, 0));
+        }
 
         pieDataSet = new PieDataSet(values, "");
         pieDataSet.setColors(colors);
